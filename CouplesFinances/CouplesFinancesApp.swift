@@ -11,7 +11,7 @@ import SwiftUI
 struct CouplesFinancesApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AccountsView()
         }
     }
 }

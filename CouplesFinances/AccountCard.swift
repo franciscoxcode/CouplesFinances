@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct AccountCard: View {
-    var emoji: String
+    var owner: User
     var bank: String
     var name: String
     var balance: Double
     var color: CardColor
+    var customEmoji: String?
+    var showingAllUsers: Bool
+    var emojiToShow: String? {
+        if showingAllUsers {
+            return owner.emoji
+        } else {
+            return customEmoji
+        }
+    }
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -48,30 +57,51 @@ struct AccountCard: View {
             )
             
             // Emoji como sticker
-            Text(emoji)
-                .font(.system(size: 22))
-                .padding(10)
+            if let emojiToShow {
+                Text(emojiToShow)
+                    .font(.system(size: 22))
+                    .padding(10)
+            }
         }
     }
 }
 
 #Preview {
+    let me = User(name: "Benja", emoji: "🐱")
+    let partner = User(name: "Pareja", emoji: "👽")
+
     VStack {
-        
+        // Vista individual (solo yo): usa customEmoji
         AccountCard(
-            emoji: "🐱",
+            owner: me,
             bank: "Banorte",
             name: "Debit Card",
             balance: 1234567.8,
-            color: .blue
+            color: .blue,
+            customEmoji: "💳",
+            showingAllUsers: false
         )
-        
+
+        // Vista individual (solo pareja): sin customEmoji → no emoji
         AccountCard(
-            emoji: "👽",
+            owner: partner,
             bank: "HSBC",
             name: "Credit Card",
             balance: 98765.43,
-            color: .orange
+            color: .orange,
+            customEmoji: nil,
+            showingAllUsers: false
+        )
+
+        // Vista compartida: muestra emoji del dueño
+        AccountCard(
+            owner: partner,
+            bank: "BBVA",
+            name: "Savings",
+            balance: 55555.0,
+            color: .blue,
+            customEmoji: "💵",
+            showingAllUsers: true
         )
     }
     .padding()

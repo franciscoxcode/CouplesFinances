@@ -21,30 +21,39 @@ struct AccountsView: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Text("Accounts")
-                .font(.largeTitle)
+                .font(.title2)
                 .padding(.bottom, 10)
 
-            ScrollView(.horizontal) {
-                LazyHGrid(rows: rows, spacing: 16) {
-                    ForEach(Array(allColors.enumerated()), id: \.offset) { index, color in
-                        AccountCard(
-                            owner: index % 2 == 0 ? me : partner,
-                            bank: "Demo Bank",
-                            name: "Account \(index + 1)",
-                            balance: Double.random(in: 1000...100000),
-                            color: color,
-                            customEmoji: nil,
-                            showingAllUsers: false,
-                            status: .included
-                        )
+            GeometryReader { geo in
+                ScrollView(.horizontal) {
+                    LazyHGrid(rows: rows, spacing: 16) {
+                        ForEach(Array(allColors.enumerated()), id: \.offset) { index, color in
+                            AccountCard(
+                                owner: index % 2 == 0 ? me : partner,
+                                bank: "Demo Bank",
+                                name: "Account \(index + 1)",
+                                balance: Double.random(in: 1000...100000),
+                                color: color,
+                                customEmoji: nil,
+                                showingAllUsers: false,
+                                status: {
+                                    switch index % 3 {
+                                    case 0: return .included
+                                    case 1: return .excluded
+                                    default: return .frozen
+                                    }
+                                }()
+                            )
+                        }
                     }
+                    .frame(height: geo.size.height) // 👈 el grid ocupa solo el alto disponible
                 }
-                .padding(.horizontal)
             }
+            .frame(height: 250)
         }
-        .padding()
+        .padding(.horizontal, 22)
     }
 }
 

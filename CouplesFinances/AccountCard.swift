@@ -28,9 +28,17 @@ struct AccountCard: View {
         case .included:
             return color.background  // normal, usa la paleta
         case .excluded:
-            return Color.gray.opacity(0.2) // fondo grisáceo
+            return Color.gray.opacity(0.08) // fondo grisáceo
         case .frozen:
             return color.background.opacity(0.4) // mismo color, pero apagado/translúcido
+        }
+    }
+    var balanceColor: Color {
+        switch status {
+        case .included, .frozen:
+            return color.accent
+        case .excluded:
+            return Color.gray
         }
     }
     
@@ -55,7 +63,7 @@ struct AccountCard: View {
                 Text(balance, format: .currency(code: "MXN"))
                     .font(.headline)
                     .bold()
-                    .foregroundColor(color.accent)
+                    .foregroundColor(balanceColor)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
             }

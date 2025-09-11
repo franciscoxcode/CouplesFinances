@@ -66,43 +66,33 @@ struct AccountCard: View {
     }
 }
 
-#Preview {
-    let me = User(name: "Benja", emoji: "🐱")
-    let partner = User(name: "Pareja", emoji: "👽")
+    #Preview {
+        let me = User(name: "Benja", emoji: "🐱")
 
-    VStack {
-        // Vista individual (solo yo): usa customEmoji
-        AccountCard(
-            owner: me,
-            bank: "Banorte",
-            name: "Debit Card",
-            balance: 1234567.8,
-            color: .blue,
-            customEmoji: "💳",
-            showingAllUsers: false
-        )
+        let allColors: [CardColor] = [
+            .blue, .orange, .green, .red, .purple, .indigo, .brown, .yellow, .mint, .gray
+        ]
 
-        // Vista individual (solo pareja): sin customEmoji → no emoji
-        AccountCard(
-            owner: partner,
-            bank: "HSBC",
-            name: "Credit Card",
-            balance: 98765.43,
-            color: .orange,
-            customEmoji: nil,
-            showingAllUsers: false
-        )
+        // Dos filas en scroll horizontal
+        let rows = [
+            GridItem(.fixed(120)),
+            GridItem(.fixed(120))
+        ]
 
-        // Vista compartida: muestra emoji del dueño
-        AccountCard(
-            owner: partner,
-            bank: "BBVA",
-            name: "Savings",
-            balance: 55555.0,
-            color: .blue,
-            customEmoji: "💵",
-            showingAllUsers: true
-        )
+        return ScrollView(.horizontal) {
+            LazyHGrid(rows: rows, spacing: 16) {
+                ForEach(Array(allColors.enumerated()), id: \.offset) { index, color in
+                    AccountCard(
+                        owner: me,
+                        bank: "Demo Bank",
+                        name: "Account \(index + 1)",
+                        balance: Double.random(in: 1000...100000),
+                        color: color,
+                        customEmoji: nil,
+                        showingAllUsers: false
+                    )
+                }
+            }
+            .padding()
+        }
     }
-    .padding()
-}

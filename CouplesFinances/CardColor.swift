@@ -57,8 +57,4 @@ struct CardColor {
         accent: Color.mint
     )
 
-    static let gray = CardColor(
-        background: Color.gray.opacity(0.12),
-        accent: Color.gray
-    )
 }

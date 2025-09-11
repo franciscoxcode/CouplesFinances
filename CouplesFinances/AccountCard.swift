@@ -22,6 +22,17 @@ struct AccountCard: View {
             return customEmoji
         }
     }
+    var status: AccountStatus
+    var backgroundColor: Color {
+        switch status {
+        case .included:
+            return color.background  // normal, usa la paleta
+        case .excluded:
+            return Color.gray.opacity(0.2) // fondo grisáceo
+        case .frozen:
+            return color.background.opacity(0.4) // mismo color, pero apagado/translúcido
+        }
+    }
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -50,10 +61,10 @@ struct AccountCard: View {
             }
             .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
             .padding()
-            .frame(minWidth: 150)
+            .frame(width: 150)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(color.background)
+                    .fill(backgroundColor)
             )
             
             // Emoji como sticker
@@ -66,33 +77,45 @@ struct AccountCard: View {
     }
 }
 
-    #Preview {
-        let me = User(name: "Benja", emoji: "🐱")
+#Preview {
+    let me = User(name: "Benja", emoji: "🐱")
 
-        let allColors: [CardColor] = [
-            .blue, .orange, .green, .red, .purple, .indigo, .brown, .yellow, .mint, .gray
-        ]
+    VStack(spacing: 20) {
+        // Included (normal)
+        AccountCard(
+            owner: me,
+            bank: "Banorte",
+            name: "Debit Card",
+            balance: 12345.67,
+            color: .blue,
+            customEmoji: "💳",
+            showingAllUsers: false,
+            status: .included
+        )
 
-        // Dos filas en scroll horizontal
-        let rows = [
-            GridItem(.fixed(120)),
-            GridItem(.fixed(120))
-        ]
+        // Excluded (gris)
+        AccountCard(
+            owner: me,
+            bank: "HSBC",
+            name: "Retirement Fund",
+            balance: 98765.43,
+            color: .orange,
+            customEmoji: "🏦",
+            showingAllUsers: false,
+            status: .excluded
+        )
 
-        return ScrollView(.horizontal) {
-            LazyHGrid(rows: rows, spacing: 16) {
-                ForEach(Array(allColors.enumerated()), id: \.offset) { index, color in
-                    AccountCard(
-                        owner: me,
-                        bank: "Demo Bank",
-                        name: "Account \(index + 1)",
-                        balance: Double.random(in: 1000...100000),
-                        color: color,
-                        customEmoji: nil,
-                        showingAllUsers: false
-                    )
-                }
-            }
-            .padding()
-        }
+        // Frozen (atenuado)
+        AccountCard(
+            owner: me,
+            bank: "BBVA",
+            name: "Investment",
+            balance: 55555.00,
+            color: .green,
+            customEmoji: "❄️",
+            showingAllUsers: false,
+            status: .frozen
+        )
     }
+    .padding()
+}
